@@ -1,82 +1,131 @@
 # ROLLER-DICE-GAME
 Android App Development(Designed a dice game)
+
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(Demo());
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: Scaffold(
+      backgroundColor: Colors.lightGreen,
+      appBar: AppBar(
+        backgroundColor: Colors.lightBlue,
+        title: Text('DICE GAME',
+          style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 24.0),),
+          centerTitle: true,
+      ),
+      body: Dice(),
+    ),
+  ));
 }
 
-class Demo extends StatelessWidget {
+
+class Dice extends StatefulWidget {
+  @override
+  _DiceState createState() => _DiceState();
+}
+
+class _DiceState extends State<Dice> {
+  int left=1,right=1,score=0;
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: Colors.teal,
-        appBar: AppBar(
-          backgroundColor: Colors.amberAccent,
-          title: Text('My Profile',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 24.0),),
-          centerTitle: true,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Image.asset('assets/${left}.png'),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Image.asset('assets/${right}.png'),
+              ),
+            ),
+          ],
         ),
-        body:Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 100.0,
-                backgroundImage: AssetImage('assets/logo.png'),
-              ),
-              SizedBox(height: 25.0,),
-              Text('Flutter Developer',style: TextStyle(color: Colors.white,fontSize: 25.0),),
-              SizedBox(
-                width: 200.0,
-                child: Divider(
-                  color: Colors.black,
-                ),
-                height: 30.0,
-              ),
-              Card(
-                margin: EdgeInsets.symmetric(vertical:10.0,horizontal:25.0),
-//                padding: EdgeInsets.all(10.0),
-                color: Colors.white,
-                child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: ListTile(
-                      leading: Icon(Icons.person,size: 40.0,color: Colors.red,),
-                      title: Text('Deenadayalan',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 28.0),),
-                    )
-                ),
-              ),
-              Card(
-                margin: EdgeInsets.symmetric(vertical:10.0,horizontal:25.0),
-//                padding: EdgeInsets.all(10.0),
-                color: Colors.white,
-                child: Padding(
-                  padding: EdgeInsets.all(4.0),
-                  child: ListTile(
-                    leading: Icon(Icons.phone,size: 40.0,color:Colors.red,),
-                    title: Text('+91-9791654694',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 28.0),),
-                  ),
-                ),
-              ),
-              Card(
-                margin: EdgeInsets.symmetric(vertical:10.0,horizontal:25.0),
-//                padding: EdgeInsets.all(10.0),
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: ListTile(
-                    leading: Icon(Icons.mail,size: 40.0,color: Colors.red,),
-                    title: Text('ddvs2499@gmail.com',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 28.0),),
-                  ),
-                ),
-              )
-            ],
+        SizedBox(
+          height: 40.0,
+        ),
+        Center(
+          child: RaisedButton(
+            color: Colors.white,
+            child: Text('ROLL',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 40.0),),
+            onPressed: () async{
+              setState(() {
+                left=Random().nextInt(6)+1;
+                right=Random().nextInt(6)+1;
+              });
+              if(score>=100)
+              {
+                await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Hurrah! You have won the Game'),
+                        actions: [
+                          FlatButton(
+                            child: Text('OK'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    }
+                );
+                setState(() {
+                  score=0;
+                });
+              }
+              if(left!=right)
+              {
+                setState(() {
+                  score=score+left+right;
+                });
+              }
+              else
+              {
+                await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Game Over!!!'),
+                        content: Text('Your score is ${score}'),
+                        actions: [
+                          FlatButton(
+                            child: Text('OK'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    }
+                );
+                setState(() {
+                  score=0;
+                });
+              }
+            },
           ),
         ),
-      ),
+        SizedBox(
+          height: 40.0,
+        ),
+        Text('Score : ${score}',style: TextStyle(color: Colors.white,fontSize: 30.0,fontWeight: FontWeight.bold),)
+      ],
     );
   }
 }
+
+
 
 
 
